@@ -14,10 +14,9 @@ const dir_map = [
 
 
 const State = (props) => {
-    // state: props.curState
     return (
         <>
-        <div id='state-dir-area'>
+        <div className='state-dir-area'>
             {
                 <>
                 <div className='state-dot' key={3} style={{left: '33%', top: '33%', 'background-color': 'gray'}}></div>                 
@@ -46,7 +45,7 @@ const State = (props) => {
                 null    
             }            
         </div>
-        <div id='state-apple-area'>
+        <div className='state-apple-area'>
             {
                 <>
                 <div className='state-dot' key={5} style={{left: '33%', top: '33%', 'background-color': 'gray'}}></div>                 
