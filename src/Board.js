@@ -13,7 +13,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const createQTable = () => {
     var arr = [];
-    for(var i = 0; i < 8; i++) {
+    for(var i = 0; i < 16; i++) {
         var oth = [];
         for(var j = 0; j < 8; j++) {
             oth.push([0, 0, 0, 0]);
@@ -28,14 +28,21 @@ var Q_table = createQTable();
 const dirs = [[-5, 0], [0, -5], [5, 0], [0, 5]];
 
 const startState = {
+
+    // Environment params:
     dots: [
-        [0, 0]
+        genCoords()
     ],
     food: genCoords(),
     direction: 2,
     speed: 100,
     score: 0,
-    justAte: false
+    justAte: false,
+    
+    // Q learning hyperparams:
+    ep: 0,
+    epsilon: 0.9,
+    discount_factor: 1.0
 }
 
 const checkBounds = (head) => {
@@ -49,16 +56,32 @@ class Board extends Component {
     
     componentDidMount () {
         this.qlearning();
+        //setInterval(this.moveSnake, this.state.speed);
         //document.onkeydown = this.onKeyDown;
     }
 
+    setDir (val) {
+        if(val === 37) {
+            if(this.state.direction !== 2)
+                this.setState({direction: 0});
+        }
+        else if(val === 38) {
+            if(this.state.direction !== 3)
+                this.setState({direction: 1});
+        }
+        else if(val === 39) {
+            if(this.state.direction !== 0)
+                this.setState({direction: 2});
+        }        
+        else if(val === 40) {
+            if(this.state.direction !== 1)
+                this.setState({direction: 3});
+        }        
+    }
 
     onKeyDown = (e) => {
         e = e || window.event();
-        var val = parseInt(e.keyCode);
-        if(val >= 37 && val <= 40) {
-            this.setState({direction: val - 37});
-        }
+        this.setDir(parseInt(e.keyCode));
     }
 
     moveSnake = () => {
@@ -90,12 +113,18 @@ class Board extends Component {
             //if(state.speed > 20) state.speed -= 10;
             foodFound = true;
         }
-        
         state.justAte = foodFound;
         state.dots.push([newx, newy]);
-        if(!foodFound)
-            state.dots.shift();
-        this.setState(state);
+        if(this.checkBorders() || this.checkCollapsed()) {
+            this.gameOver();
+            return true;
+        }
+        else {
+            if(!foodFound)
+                state.dots.shift();
+            this.setState(state);
+            return false;
+        }
     }
 
     checkBorders = () => {
@@ -111,7 +140,7 @@ class Board extends Component {
         var lost = false;
         var head = state.dots[state.dots.length - 1];
         state.dots.forEach((dot, i) => {
-            if(i !== state.dots.length - 1 && head[0] === dot[0] && head[1] === dot[1]) {
+            if(i !== 0 && i !== state.dots.length - 1 && head[0] === dot[0] && head[1] === dot[1]) {
                 lost = true;
             }
         })   
@@ -120,79 +149,83 @@ class Board extends Component {
 
     gameOver = () => {
         this.setState({
+            ...this.state,
             dots: [
-                [0, 0]
+                genCoords()
             ],
             food: genCoords(),
             direction: 2,
             speed: 100,
             score: 0,
-            justAte: false
+            justAte: false,
         });
     }
 
     action = (eps) => {
         var [surr, dir] = this.getState();
-        var v1 = surr[0] + 2 * surr[1] + 4 * surr[2];
+        var v1 = surr[0] + 2 * surr[1] + 4 * surr[2] + 8 * surr[3];
         if(Math.random() < eps) {
             return Math.floor(Math.random() * 4);
         }
         else {
-            var mx = 0, ind = 0;
+            var mx = -100000, ind = 0;
             for(var i = 0; i < 4; i++) {
                 if(Q_table[v1][dir][i] >= mx) {
                     mx = Q_table[v1][dir][i];
                     ind = i;
                 }
             }
-            return ind;
+            return parseInt(ind);
         }
     }
 
     qlearning = async () => {
         var mx, done, reward;
         var next_surr, next_dir, next_v1;
-        var surr, dir, v1;
+        var surr, dir, v1, dist;
 
-        var eps = 0.5;
-        var discount_factor = 0.99;
+        var epsilon = this.state.epsilon;
+        var discount_factor = this.state.discount_factor;
 
-        for(var ep = 0; ep < 100; ep++) {
+        for(var ep = 0; ep < 200; ep++) {
             done = false;
             [surr, dir] = this.getState();
-            v1 = surr[0] + 2 * surr[1] + 4 * surr[2];
+            v1 = surr[0] + 2 * surr[1] + 4 * surr[2] + 8 * surr[3];
             while(!done) {
+                dist = Math.abs(this.state.food[0] - this.state.dots[this.state.dots.length-1][0])
+                + Math.abs(this.state.food[1] - this.state.dots[this.state.dots.length-1][1]);
+ 
                 // step
-                var vv = this.action(eps);
-                this.setState({direction: vv})
+                this.setDir(this.action(epsilon) + 37);
                 await delay(10);
-                this.moveSnake();
-
-                // done check
-                done = (this.checkCollapsed() || this.checkBorders());
-                
-                // reward
-                if(done) reward = -50;
-                else if(this.state.justAte) reward = 5;
-                else reward = -1;
+                done = this.moveSnake();
 
                 [next_surr, next_dir] = this.getState();
-                next_v1 = next_surr[0] + 2 * next_surr[1] + 4 * next_surr[2];
+                next_v1 = next_surr[0] + 2 * next_surr[1] + 4 * next_surr[2] + 8 * next_surr[3];
 
-                mx = 0;
+                // reward
+                if(done) reward = -50;
+                else if(this.state.justAte === true) reward = 30;
+                else if(Math.abs(this.state.food[0] - this.state.dots[this.state.dots.length-1][0])
+                + Math.abs(this.state.food[1] - this.state.dots[this.state.dots.length-1][1]) < dist) 
+                    reward = 2;
+                else reward = -1;  
+
+                //if(reward )
+                //console.log(reward)
+
+                mx = -100000;
                 for(var i = 0; i < 4; i++) {
                     if(Q_table[next_v1][next_dir][i] >= mx) {
                         mx = Q_table[next_v1][next_dir][i];
                     }
                 }              
 
-                Q_table[v1][dir] += 0.01 * (reward + discount_factor * mx - Q_table[v1][dir])
-                
-                console.log("Reward: ", reward);
+                Q_table[v1][dir] += 0.01 * ((reward + discount_factor * mx) - Q_table[v1][dir])
             }
             this.gameOver();
-            if(eps * 0.99 >= 0.01) eps *= 0.99;
-            console.log("Done", ep);
+            if((epsilon * 0.99) >= 0.01) epsilon *= 0.996;
+            this.setState({...this.state, ep: ep+1, epsilon: epsilon})
         }
     }
 
@@ -202,13 +235,11 @@ class Board extends Component {
             dir = relative pos of the apple (8 vals 0 - 7)
     */
     getState = () => {
-        var surr = [0, 0, 0];
+        var surr = [0, 0, 0, 0];
         var dir = 0, dir_ = this.state.direction;
         var head = this.state.dots[this.state.dots.length - 1]
         var relx = head[0] - this.state.food[0];
         var rely = head[1] - this.state.food[1];
-        var found_up = false, found_left = false, found_right = false;
-        var upx, upy, leftx, lefty, rightx, righty;
 
         if(relx < 0 && rely < 0) dir = 6;//dir = 0;
         else if(relx === 0 && rely < 0) dir = 5; //dir = 6;
@@ -219,52 +250,31 @@ class Board extends Component {
         else if(relx < 0 && rely > 0) dir = 0;//dir = 6;
         else if(relx < 0 && rely === 0) dir = 7;
 
-        if(dir_ === 2) {
-            upx = head[0] + 5;
-            upy = head[1];
-            leftx = head[0];
-            lefty = head[1] - 5;
-            rightx = head[0];
-            righty = head[1] + 5;            
-            dir = (8 + dir - 6) % 8;
+        if(dir_ === 2) {           
+            //dir = (8 + dir - 6) % 8;
         }
         else if(dir_ === 0) {
-            upx = head[0] - 5;
-            upy = head[1];
-            leftx = head[0];
-            lefty = head[1] + 5;
-            rightx = head[0];
-            righty = head[1] - 5;            
-            dir = (8 + dir - 2) % 8;
+            //dir = (8 + dir - 2) % 8;
         }
         else if(dir_=== 3) {
-            upx = head[0];
-            upy = head[1] + 5;
-            leftx = head[0] + 5;
-            lefty = head[1];
-            rightx = head[0] - 5;
-            righty = head[1];
-            dir = (8 + dir - 4) % 8;
-        }
-        else {
-            upx = head[0];
-            upy = head[1] - 5;
-            leftx = head[0] - 5;
-            lefty = head[1];
-            rightx = head[0] + 5;
-            righty = head[1];
+            //dir = (8 + dir - 4) % 8;
         }
 
-        this.state.dots.forEach((dot) => {
-            if(dot[0] === upx && dot[1] === upy) found_up = 1;
-            else if(dot[0] === leftx && dot[1] === lefty) found_left = 1;
-            else if(dot[0] === rightx && dot[1] === righty) found_right = 1;
-        })
+        for(var index = 0; index < 4; index++) {    
+            if(checkBounds([head[0] + dirs[index][0],  head[1] + dirs[index][1]])) {
+                surr[index] = 1;
+            }
+            else {
+                // eslint-disable-next-line no-loop-func
+                this.state.dots.forEach((dot, i) => {
+                    if(i < this.state.dots.length - 2) {
+                        if((dot[0] === (head[0] + dirs[index][0])) && (dot[1] === (head[1] + dirs[index][1]))) 
+                            surr[index] = 1;
+                    }
+                })
+            }
+        }    
 
-        if(checkBounds([upx, upy]) || found_up) surr[0] = 1;
-        if(checkBounds([leftx, lefty]) || found_left) surr[1] = 1;
-        if(checkBounds([rightx, righty]) || found_right) surr[2] = 1;        
-        
         return [surr, dir];
     }
 
@@ -292,6 +302,7 @@ class Board extends Component {
                 <div className='state-container'>
                     <State curState={this.getState()} />
                 </div>
+                Episode: {this.state.ep} Epsilon: {this.state.epsilon}
             </div>
             </>
         );

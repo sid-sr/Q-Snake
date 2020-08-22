@@ -26,14 +26,14 @@ const State = (props) => {
             {
                 props.curState[0][0] === 1
                 ?
-                    <div className='state-dot' key={0} style={{left: '33%', top: '0%'}}></div>                 
+                    <div className='state-dot' key={0} style={{left: '0%', top: '33%'}}></div>                 
                 :
                 null
             }
             {
                 props.curState[0][1] === 1
                 ?
-                    <div className='state-dot' key={1} style={{left: '0%', top: '33%'}}></div>                 
+                    <div className='state-dot' key={1} style={{left: '33%', top: '0%'}}></div>                 
                 :
                 null    
             }
@@ -43,7 +43,14 @@ const State = (props) => {
                     <div className='state-dot' key={2} style={{left: '66%', top: '33%'}}></div>                 
                 :
                 null    
-            }            
+            }
+            {
+                props.curState[0][3] === 1
+                ?
+                    <div className='state-dot' key={3} style={{left: '33%', top: '66%'}}></div>                 
+                :
+                null    
+            }                        
         </div>
         <div className='state-apple-area'>
             {
