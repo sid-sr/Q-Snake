@@ -21,12 +21,12 @@
   <a href="#acknowledgements">Acknowledgements</a>
 </p>
  
+## About
+---
+
 <table>
 <tr>
 <td>
-
----
-## About
 
 • A website that visualises the Q-learning RL algorithm and shows how an AI agent can learn to play Snake using it. <br>
 • Built using [create-react-app](https://github.com/facebook/create-react-app) and uses no reinforcement learning libraries/environments. <br>
