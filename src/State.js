@@ -60,7 +60,7 @@ const State = (props) => {
                 </>
             }
             {
-                <div className='state-dot' key={7} style={{left: dir_map[props.curState[1]][0], top: dir_map[props.curState[1]][1], 'background-color': '#18ff85'}}></div>
+                <div className='state-dot' key={7} style={{left: dir_map[props.curState[1]][0], top: dir_map[props.curState[1]][1], 'background-color': 'black'}}></div>
             }
         </div>
         </>

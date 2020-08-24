@@ -11,7 +11,7 @@ const genCoords = () => {
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const manhattanDist = (p1, p2) => {
-    return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1])
+    return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
 }
 
 const createQTable = () => {
@@ -169,7 +169,6 @@ class Board extends Component {
                     ind = i;
                 }
             }
-            //console.log(surr, v1, dir, Q_table[v1][dir], ind);
             return parseInt(ind);
         }
     }
@@ -181,9 +180,9 @@ class Board extends Component {
 
         var epsilon = this.state.epsilon;
         var discount_factor = this.state.discount_factor;
-        var dec = (0.9) / 90;
+        var dec = (0.9 - 0.05) / 480;
 
-        for(var ep = 0; ep < 100; ep++) {
+        for(var ep = 0; ep < 500; ep++) {
             done = false;
             [surr, dir] = this.getState();
             v1 = surr[0] + (2 * surr[1]) + (4 * surr[2]) + (8 * surr[3]);
@@ -191,17 +190,14 @@ class Board extends Component {
 
             while(!done) {
                 dist = manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]);
- 
+
                 // step
                 action = this.action(epsilon);
                 
                 // moving and checking the length 2 edge case:
                 if(this.setDir(action + 37)) done = true;
-                
-                if(ep >= 90)
-                    await delay(50);
-                else
-                    await delay(10);
+                if(ep >= 480) await delay(100);
+                else await delay(10);
                 
                 done = done || (steps >= 500) || this.moveSnake();
                 if(!done) {
@@ -212,12 +208,12 @@ class Board extends Component {
                 // reward
                 if(done) 
                     reward = -100;
-                else if(this.state.justAte === true) 
-                    reward = 300;
+                else if(this.state.justAte) 
+                    reward = 30;
                 else if(manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]) < dist) 
                     reward = 1;
                 else 
-                    reward = -10;  
+                    reward = -5;  
 
                 if(!done) {
                     mx = -100000;
@@ -226,7 +222,6 @@ class Board extends Component {
                             mx = Q_table[next_v1][next_dir][i];
                         }
                     }
-                    
                 }          
                 else mx = 0;      
 
@@ -234,12 +229,16 @@ class Board extends Component {
                 
                 v1 = next_v1;
                 dir = next_dir;
-                steps += 1
+                if(this.state.justAte)
+                    steps += 1
+                else 
+                    steps = 0
             }
             this.gameOver();    
-            if(epsilon - dec >= 0)
+            if(epsilon - dec >= 0.05)
                 epsilon -= dec;
-            
+            else if(ep >= 480) epsilon = 0;
+        
             this.setState({...this.state, ep: ep+1, epsilon: epsilon})
         }
         console.log(Q_table);
@@ -292,7 +291,7 @@ class Board extends Component {
                     <div></div>
                     <div className='main-text'>
                         <br></br><br></br>
-                        <h1 style={{'font-family': 'FacileSans', 'font-size': 60}}>Q-Snake</h1>
+                        <h1 style={{'font-family': 'FacileSans', 'font-size': 60, 'color': 'black'}}>Q-Snake</h1>
                     </div>
                     <div className='main-image'>
                         <img src={Logo} alt='Q-Snake' width='250'></img>
@@ -308,7 +307,7 @@ class Board extends Component {
                 <div className='state-container'>
                     <State curState={this.getState()} />
                 </div>
-                Episode: {this.state.ep} Epsilon: {this.state.epsilon}
+                Episode: {this.state.ep} Epsilon: {this.state.epsilon.toFixed(2)}
             </div>
             </>
         );
