@@ -21,8 +21,8 @@
   <a href="#acknowledgements">Acknowledgements</a>
 </p>
  
-## About
 ---
+## About
 
 <table>
 <tr>

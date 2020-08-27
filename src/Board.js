@@ -3,6 +3,7 @@ import SnakeDot from './SnakeDot.js';
 import Food from './Food.js';
 import State from './State.js'
 import Logo from './img/cyborg-25.png';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const genCoords = () => {
     return [Math.floor(Math.random() * 20) * 5, Math.floor(Math.random() * 20) * 5];
@@ -58,7 +59,7 @@ class Board extends Component {
     state = startState
     
     componentDidMount () {
-        this.qlearning();
+        //this.qlearning();
         //setInterval(this.moveSnake, this.state.speed);
         //document.onkeydown = this.onKeyDown;
     }
@@ -180,9 +181,9 @@ class Board extends Component {
 
         var epsilon = this.state.epsilon;
         var discount_factor = this.state.discount_factor;
-        var dec = (0.9 - 0.05) / 480;
+        var dec = (0.9) / 140;
 
-        for(var ep = 0; ep < 500; ep++) {
+        for(var ep = 0; ep < 150; ep++) {
             done = false;
             [surr, dir] = this.getState();
             v1 = surr[0] + (2 * surr[1]) + (4 * surr[2]) + (8 * surr[3]);
@@ -196,7 +197,7 @@ class Board extends Component {
                 
                 // moving and checking the length 2 edge case:
                 if(this.setDir(action + 37)) done = true;
-                if(ep >= 480) await delay(100);
+                if(ep >= 140) await delay(100);
                 else await delay(10);
                 
                 done = done || (steps >= 500) || this.moveSnake();
@@ -230,14 +231,13 @@ class Board extends Component {
                 v1 = next_v1;
                 dir = next_dir;
                 if(this.state.justAte)
-                    steps += 1
+                    steps++;
                 else 
                     steps = 0
             }
             this.gameOver();    
-            if(epsilon - dec >= 0.05)
-                epsilon -= dec;
-            else if(ep >= 480) epsilon = 0;
+            if(epsilon - dec >= 0.0) epsilon -= dec;
+            else epsilon = 0;
         
             this.setState({...this.state, ep: ep+1, epsilon: epsilon})
         }
@@ -286,29 +286,6 @@ class Board extends Component {
     render() {
         return (
             <>
-            <div className='heading'>
-                <div className='top-container'>
-                    <div></div>
-                    <div className='main-text'>
-                        <br></br><br></br>
-                        <h1 style={{'font-family': 'FacileSans', 'font-size': 60, 'color': 'black'}}>Q-Snake</h1>
-                    </div>
-                    <div className='main-image'>
-                        <img src={Logo} alt='Q-Snake' width='250'></img>
-                    </div>
-                    <div></div>
-                </div>
-            </div>
-            <div className='grid-container'>
-                <div className='board-area'>
-                    <SnakeDot snakeDots={this.state.dots}/>
-                    <Food food={this.state.food} />
-                </div>
-                <div className='state-container'>
-                    <State curState={this.getState()} />
-                </div>
-                Episode: {this.state.ep} Epsilon: {this.state.epsilon.toFixed(2)}
-            </div>
             </>
         );
     }
