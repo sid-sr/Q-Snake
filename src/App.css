@@ -5,16 +5,50 @@
 
 .card-title {
   text-align: center;
-  color: white;
+  color: black;
 }
 .bg-dark {
   height: 100%;
 }
+
+.bg-light {
+  height: 100%;
+}
+
 .card-text {
-  color: white;
+  color: black;
 }
 
 .wrapper {
   background-color: #b8c6db;
-  background-image: linear-gradient(180deg, #b8c6db 0%, #f5f7fa 74%);
+  background: #355C7D;  /* fallback for old browsers */
+  background: -webkit-linear-gradient( #C06C84, #6C5B7B, #355C7D);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(#C06C84, #6C5B7B, #355C7D); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */  
+}
+
+.board-area {
+  background-color: white;
+  width: 100%;
+  position: relative;
+  margin-top: 30px;
+  margin-left: 15px;
+  width: 400px;
+  height: 400px;
+  border-radius: 0.25rem;
+}
+
+.board-dot {
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  background-color: black;
+  border-radius: 0.25rem;
+}
+
+.food-dot {
+  position: absolute;
+  width: 5%;
+  height: 5%;
+  background-color: #f71735;
+  border-radius: 0.25rem;
 }

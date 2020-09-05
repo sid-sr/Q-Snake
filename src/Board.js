@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import SnakeDot from './SnakeDot.js';
 import Food from './Food.js';
 import State from './State.js'
-import Logo from './img/cyborg-25.png';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
 const genCoords = () => {
     return [Math.floor(Math.random() * 20) * 5, Math.floor(Math.random() * 20) * 5];
@@ -285,7 +284,18 @@ class Board extends Component {
 
     render() {
         return (
-            <>
+            <> 
+            <Row className="justify-content-center ">
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <div className='board-area'>
+                        <SnakeDot snakeDots={this.state.dots}/>
+                        <Food food={this.state.food} />
+                    </div>
+                </Col>
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <State curState={this.getState()} />
+                </Col>    
+            </Row>
             </>
         );
     }

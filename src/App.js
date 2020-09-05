@@ -12,17 +12,17 @@ function App() {
       <Row className="justify-content-center align-items-center">
         
         <Col md="auto" lg="auto" sm="auto" xs="auto">
-          <img src={Logo} width='300'></img>
+          <img src={Logo} width='300' alt='Q-Snake Logo'></img>
         </Col>
         <Col md="auto" lg="auto" sm="auto" xs="auto">
-          <h1 style={{'font-family': 'FacileSans', 'font-size': 60, 'color': 'black'}}>Q-Snake</h1>
+          <h1 style={{'font-family': 'FacileSans', 'font-size': 60, 'color': 'white'}}>Q-Snake</h1>
         </Col>        
 
       </Row>
 
       <Row className="justify-content-center align-content-center">
         <Col md="auto" lg="auto" sm="auto" xs="auto">
-          <Card className='bg-dark' style={{'max-width': '285px', 'min-width': '200px'}}>
+          <Card className='bg-light' style={{'max-width': '18em', 'min-width': '200px', 'background-color': '#fafafa'}}>
             <Card.Body>
               <Card.Title><b>What is this?</b></Card.Title>  
               <Card.Text>
@@ -35,19 +35,24 @@ function App() {
         </Col>
 
         <Col md="auto" lg="auto" sm="auto" xs="auto">
-          <Card className='bg-dark' style={{'max-width': '285px', 'min-width': '200px'}}>
+          <Card className='bg-light' style={{'max-width': '18em', 'min-width': '200px', 'background-color': '#fafafa'}}>
             <Card.Body>
               <Card.Title><b>How do I use this?</b></Card.Title> 
               <Card.Text>
                 • Just set the hyperparameters below and hit <b>Run</b>.
                 <br></br>
-                • You can vary the speed to see how the snake plays towards the end.
+                • Vary the speed to see how the snake plays towards the end.
+                <br></br>
+                • The code for this project is available on <a href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
               </Card.Text>         
             </Card.Body>
           </Card>
         </Col>    
 
       </Row>
+
+      <Board />
+
     </Container>
   );
 }
