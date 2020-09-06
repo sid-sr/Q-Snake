@@ -43,7 +43,7 @@ function App() {
                 <br></br>
                 • Vary the speed to see how the snake plays towards the end.
                 <br></br>
-                • The code for this project is available on <a href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
+                • The <a href='https://www.github.com/sid-sr/q-snake'>code</a> for this project.
               </Card.Text>         
             </Card.Body>
           </Card>
