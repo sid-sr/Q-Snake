@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import SnakeDot from './SnakeDot.js';
 import Food from './Food.js';
 import State from './State.js'
-import { Row, Col } from 'react-bootstrap';
+import { Form, Row, Col, Button, Card } from 'react-bootstrap';
 
 const genCoords = () => {
     return [Math.floor(Math.random() * 20) * 5, Math.floor(Math.random() * 20) * 5];
@@ -285,7 +285,7 @@ class Board extends Component {
     render() {
         return (
             <> 
-            <Row className="justify-content-center ">
+            <Row className="justify-content-center">
                 <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <div className='board-area'>
                         <SnakeDot snakeDots={this.state.dots}/>
@@ -296,6 +296,59 @@ class Board extends Component {
                     <State curState={this.getState()} />
                 </Col>    
             </Row>
+            <Row className="justify-content-center align-content-center" style={{'margin-top': '30px'}}>
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <Card className='bg-light' style={{'min-width': '288px'}}>
+                        <Card.Body>
+                            <Card.Title><b>Parameters:</b></Card.Title>
+                            <Card.Text style={{'margin-top': '15px', 'margin-left': '15px'}}>
+                                <Form>
+                                    <Row>
+                                        <Form.Group>
+                                            <Form.Label>Start Epsilon:</Form.Label>
+                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Around 0.99" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Row>
+
+                                    <Row>
+                                        <Form.Group>
+                                            <Form.Label>Discount Factor:</Form.Label>
+                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="1.0 is good for this problem" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Row> 
+                                    
+                                    <Row>
+                                        <Form.Group>
+                                            <Form.Label>End Epsilon:</Form.Label>
+                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Row>
+
+                                    <Row>
+                                        <Form.Group>
+                                            <Form.Label>Episodes:</Form.Label>
+                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Around 150" min="30" max="500"/>
+                                        </Form.Group>
+                                    </Row>     
+                                </Form> 
+                            </Card.Text>
+                        </Card.Body>                    
+                    </Card>   
+                </Col>
+
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <Card className='bg-light' style={{'min-width': '288px'}}>
+                        <Card.Body>
+                            <Card.Title><b>Misc. Info:</b></Card.Title>
+                            <Card.Text style={{'margin-top': '15px', 'margin-left': '15px'}}>
+
+                            </Card.Text>
+                        </Card.Body>                    
+                    </Card>   
+                </Col>
+
+            </Row>
+
             </>
         );
     }
