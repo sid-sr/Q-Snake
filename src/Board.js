@@ -285,6 +285,70 @@ class Board extends Component {
     render() {
         return (
             <> 
+
+            <Row className="justify-content-center align-content-center" style={{'margin-top': '30px'}}>
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <Card style={{'min-width': '200px'}}>
+                        <Card.Body>
+                            <Card.Title><b>Parameters:</b></Card.Title>
+                            <Card.Text>
+                                <Form>
+                                    <Form.Row>
+                                        <Form.Group style={{'min-width': '255px'}}>
+                                            <Form.Label>Start Epsilon:</Form.Label>
+                                            <Form.Control type="number" placeholder="Around 0.99" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Form.Row>                                 
+                                    <Form.Row>                                         
+                                        <Form.Group style={{'min-width': '255px'}}>
+                                            <Form.Label>Discount Factor:</Form.Label>
+                                            <Form.Control type="number" placeholder="1.0 is good for this problem" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Form.Row> 
+                                
+                                    <Form.Row>
+                                        <Form.Group style={{'min-width': '255px'}}>
+                                            <Form.Label>End Epsilon:</Form.Label>
+                                            <Form.Control type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01"/>
+                                        </Form.Group>
+                                    </Form.Row> 
+                                    <Form.Row>                                 
+                                        <Form.Group style={{'min-width': '255px'}}>
+                                            <Form.Label>Episodes:</Form.Label>
+                                            <Form.Control type="number" placeholder="Around 150" min="30" max="500"/>
+                                        </Form.Group>
+                                    </Form.Row> 
+                                    <Form.Row> 
+                                        <Form.Group as={Col}>
+                                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                                <Button type="submit">Run</Button>
+                                            </div>
+                                        </Form.Group>     
+                                        <Form.Group as={Col}>
+                                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                                <Button type="submit">Stop</Button>
+                                            </div>                                        
+                                        </Form.Group>                                                                        
+                                    </Form.Row> 
+                                </Form>                 
+                            </Card.Text>
+                        </Card.Body>                    
+                    </Card>   
+                </Col>
+
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
+                    <Card className='bg-light' style={{'min-width': '288px'}}>
+                        <Card.Body>
+                            <Card.Title><b>Speed Control:</b></Card.Title>
+                            <Card.Text>
+                                                
+                            </Card.Text>
+                        </Card.Body>                    
+                    </Card>   
+                </Col>
+            </Row>
+
+            
             <Row className="justify-content-center">
                 <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <div className='board-area'>
@@ -295,58 +359,6 @@ class Board extends Component {
                 <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <State curState={this.getState()} />
                 </Col>    
-            </Row>
-            <Row className="justify-content-center align-content-center" style={{'margin-top': '30px'}}>
-                <Col md="auto" lg="auto" sm="auto" xs="auto">
-                    <Card className='bg-light' style={{'min-width': '288px'}}>
-                        <Card.Body>
-                            <Card.Title><b>Parameters:</b></Card.Title>
-                            <Card.Text style={{'margin-top': '15px', 'margin-left': '15px'}}>
-                                <Form>
-                                    <Row>
-                                        <Form.Group>
-                                            <Form.Label>Start Epsilon:</Form.Label>
-                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Around 0.99" min="0" max="1" step="0.01"/>
-                                        </Form.Group>
-                                    </Row>
-
-                                    <Row>
-                                        <Form.Group>
-                                            <Form.Label>Discount Factor:</Form.Label>
-                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="1.0 is good for this problem" min="0" max="1" step="0.01"/>
-                                        </Form.Group>
-                                    </Row> 
-                                    
-                                    <Row>
-                                        <Form.Group>
-                                            <Form.Label>End Epsilon:</Form.Label>
-                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01"/>
-                                        </Form.Group>
-                                    </Row>
-
-                                    <Row>
-                                        <Form.Group>
-                                            <Form.Label>Episodes:</Form.Label>
-                                            <Form.Control style={{'min-width': '245px'}} type="number" placeholder="Around 150" min="30" max="500"/>
-                                        </Form.Group>
-                                    </Row>     
-                                </Form> 
-                            </Card.Text>
-                        </Card.Body>                    
-                    </Card>   
-                </Col>
-
-                <Col md="auto" lg="auto" sm="auto" xs="auto">
-                    <Card className='bg-light' style={{'min-width': '288px'}}>
-                        <Card.Body>
-                            <Card.Title><b>Misc. Info:</b></Card.Title>
-                            <Card.Text style={{'margin-top': '15px', 'margin-left': '15px'}}>
-
-                            </Card.Text>
-                        </Card.Body>                    
-                    </Card>   
-                </Col>
-
             </Row>
 
             </>
