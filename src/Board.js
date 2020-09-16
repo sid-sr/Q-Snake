@@ -41,11 +41,16 @@ const startState = {
     speed: 100,
     score: 0,
     justAte: false,
+    max_score: 0,
     
     // Q learning hyperparams:
     ep: 0,
+    start_epsilon: 0.9,
+    end_epsilon: 0,
     epsilon: 0.9,
-    discount_factor: 1.0
+    episodes: 100,
+    discount_factor: 1.0,
+    agent_state: 2 // 0 train, 1 test, 2 idle
 }
 
 const checkBounds = (head) => {
@@ -149,7 +154,6 @@ class Board extends Component {
             ],
             food: genCoords(),
             direction: 2,
-            speed: 100,
             score: 0,
             justAte: false,
         });
@@ -174,15 +178,13 @@ class Board extends Component {
     }
 
     qlearning = async () => {
-        var mx, done, reward;
+        var mx, mxs = 0, done, reward;
         var next_surr, next_dir, next_v1;
         var surr, dir, v1, dist, action, steps;
-
-        var epsilon = this.state.epsilon;
-        var discount_factor = this.state.discount_factor;
-        var dec = (0.9) / 140;
-
-        for(var ep = 0; ep < 150; ep++) {
+        var cur_epsilon = this.state.start_epsilon;
+        var dec = (this.state.start_epsilon - this.state.end_epsilon) / this.state.episodes;
+        
+        for(var ep = 0; ep < this.state.episodes; ep++) {
             done = false;
             [surr, dir] = this.getState();
             v1 = surr[0] + (2 * surr[1]) + (4 * surr[2]) + (8 * surr[3]);
@@ -192,12 +194,11 @@ class Board extends Component {
                 dist = manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]);
 
                 // step
-                action = this.action(epsilon);
+                action = this.action(cur_epsilon);
                 
                 // moving and checking the length 2 edge case:
                 if(this.setDir(action + 37)) done = true;
-                if(ep >= 140) await delay(100);
-                else await delay(10);
+                else await delay(this.state.speed);
                 
                 done = done || (steps >= 500) || this.moveSnake();
                 if(!done) {
@@ -225,7 +226,7 @@ class Board extends Component {
                 }          
                 else mx = 0;      
 
-                Q_table[v1][dir][action] += 0.01 * ((reward + (discount_factor * mx)) - Q_table[v1][dir][action])
+                Q_table[v1][dir][action] += 0.01 * ((reward + (this.state.discount_factor * mx)) - Q_table[v1][dir][action])
                 
                 v1 = next_v1;
                 dir = next_dir;
@@ -233,12 +234,18 @@ class Board extends Component {
                     steps++;
                 else 
                     steps = 0
+
+                if(this.state.agent_state !== 0) 
+                    break;
+                if(this.state.score > mxs) 
+                    mxs = this.state.score;
             }
             this.gameOver();    
-            if(epsilon - dec >= 0.0) epsilon -= dec;
-            else epsilon = 0;
-        
-            this.setState({...this.state, ep: ep+1, epsilon: epsilon})
+            if((cur_epsilon - dec) >= this.state.end_epsilon) cur_epsilon -= dec;
+            else cur_epsilon = this.state.end_epsilon;
+            this.setState({...this.state, max_score: mxs, ep: ep+1, epsilon: cur_epsilon})
+            if(this.state.agent_state !== 0) 
+                break;
         }
         console.log(Q_table);
     }
@@ -282,55 +289,138 @@ class Board extends Component {
         return [surr, dir];
     }
 
+    changeSpeed = (event) => {
+        this.setState({...this.state, speed: parseInt(event.target.value)});
+        event.preventDefault();
+    }
+
+    handleSubmit = (event) => {
+        this.setState({...this.state,
+                        start_epsilon: parseFloat(event.target[0].value), 
+                        discount_factor: parseFloat(event.target[1].value), 
+                        end_epsilon: parseFloat(event.target[2].value), 
+                        epsilon: parseFloat(event.target[0].value), 
+                        agent_state: 0,
+                        episodes: parseInt(event.target[3].value)}, () => {
+                            console.log(this.state);
+                            this.qlearning();
+                        })        
+        event.preventDefault();
+    }
+
+    testAgent = async() => {
+        var done, reward;
+        var next_surr, next_dir, next_v1;
+        var surr, dir, v1, dist, action, steps;
+        while(this.state.agent_state === 1) {
+            done = false;
+            [surr, dir] = this.getState();
+            v1 = surr[0] + (2 * surr[1]) + (4 * surr[2]) + (8 * surr[3]);
+            steps = 0;
+
+            while(!done) {
+                dist = manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]);
+
+                // step
+                action = this.action(0);
+                
+                // moving and checking the length 2 edge case:
+                if(this.setDir(action + 37)) done = true;
+                else await delay(this.state.speed);
+                
+                done = done || (steps >= 500) || this.moveSnake();
+                if(!done) {
+                    [next_surr, next_dir] = this.getState();
+                    next_v1 = next_surr[0] + (2 * next_surr[1]) + (4 * next_surr[2]) + (8 * next_surr[3]);
+                }
+
+                // reward
+                if(done) 
+                    reward = -100;
+                else if(this.state.justAte) 
+                    reward = 30;
+                else if(manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]) < dist) 
+                    reward = 1;
+                else 
+                    reward = -5;     
+                    
+                v1 = next_v1;
+                dir = next_dir;
+                if(this.state.justAte)
+                    steps++;
+                else 
+                    steps = 0
+
+                if(this.state.agent_state !== 1) 
+                    break;
+            }
+            this.gameOver();                
+        }
+    }
+    
+    setTestAgentState = () => {
+        this.setState({...this.state, agent_state: 1}, () => {
+            console.log("State updated to test.");
+            this.testAgent();
+        });
+    }
+
     render() {
         return (
             <> 
-
             <Row className="justify-content-center align-content-center" style={{'margin-top': '30px'}}>
                 <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <Card style={{'min-width': '200px'}}>
                         <Card.Body>
                             <Card.Title><b>Parameters:</b></Card.Title>
                             <Card.Text>
-                                <Form>
+                                <Form onSubmit={this.handleSubmit}>
                                     <Form.Row>
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Start Epsilon:</Form.Label>
-                                            <Form.Control type="number" placeholder="Around 0.99" min="0" max="1" step="0.01"/>
+                                            <Form.Control name="start_epsilon" type="number" placeholder="Around 0.99" min="0" max="1" step="0.01" required/>
                                         </Form.Group>
                                     </Form.Row>                                 
                                     <Form.Row>                                         
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Discount Factor:</Form.Label>
-                                            <Form.Control type="number" placeholder="1.0 is good for this problem" min="0" max="1" step="0.01"/>
+                                            <Form.Control name="discount_factor" type="number" placeholder="1.0 is good for this problem" min="0" max="1" step="0.01" required/>
                                         </Form.Group>
                                     </Form.Row> 
                                 
                                     <Form.Row>
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>End Epsilon:</Form.Label>
-                                            <Form.Control type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01"/>
+                                            <Form.Control name="end_epsilon" type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01" required/>
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row>                                 
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Episodes:</Form.Label>
-                                            <Form.Control type="number" placeholder="Around 150" min="30" max="500"/>
+                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="30" max="500" required />
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row> 
                                         <Form.Group as={Col}>
                                             <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <Button type="submit">Run</Button>
+                                                <Button type="submit" variant="primary">Train</Button>
                                             </div>
-                                        </Form.Group>     
+                                        </Form.Group>  
                                         <Form.Group as={Col}>
                                             <div style={{ display: "flex", justifyContent: "center" }}>
-                                                <Button type="submit">Stop</Button>
+                                                <Button type="button" variant="primary" onClick={() => {this.setState({...this.state, agent_state: 2})}}>Stop</Button>
+                                            </div>
+                                        </Form.Group>                                             
+                                        <Form.Group as={Col}>
+                                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                                <Button variant="primary" onClick={this.setTestAgentState}>Test</Button>
                                             </div>                                        
                                         </Form.Group>                                                                        
                                     </Form.Row> 
-                                </Form>                 
+                                </Form>         
+                                <Row className="justify-content-center">
+                                    <small>{"Note: Train button resets Q-table"}</small>
+                                </Row>        
                             </Card.Text>
                         </Card.Body>                    
                     </Card>   
@@ -341,14 +431,51 @@ class Board extends Component {
                         <Card.Body>
                             <Card.Title><b>Speed Control:</b></Card.Title>
                             <Card.Text>
-                                                
+                                <Form>
+                                    <Form.Group style={{'text-align': 'center'}}>
+                                        <Form.Label>Delay between moves: </Form.Label>
+                                        <Form.Control type="range" min="10" max = "200" step="5" onChange = {(e) => this.changeSpeed(e)}/>
+                                    </Form.Group>
+                                </Form>    
+                            </Card.Text>
+                            <Card.Title><b>Current Run:</b></Card.Title>
+                            <Card.Text>
+                                <Row className='justify-content-center'>
+                                    <Col style={{'margin-left': '20px', 'text-align': 'left', 'font-size': '15px'}}>
+                                        Episodes: <br />
+                                        Start Epsilon: <br />
+                                        End Epsilon: <br />
+                                        Current Epsilon: <br />
+                                        Discount Factor: <br />
+                                        Current Score: <br />
+                                        Max Score: <br />
+                                    </Col>
+                                    <Col style={{'font-size': '15px', 'max-width': '110px'}}>
+                                        {this.state.ep} / {this.state.episodes} <br />
+                                        {this.state.start_epsilon} <br />
+                                        {this.state.end_epsilon} <br />
+                                        {parseFloat(this.state.epsilon).toFixed(3)} <br />
+                                        {this.state.discount_factor} <br />
+                                        {this.state.score} <br />
+                                        {this.state.max_score} <br />
+                                    </Col>
+                                </Row>
+                            </Card.Text>
+                            <Card.Title>
+                                <b>What does the <br />agent see?</b>
+                            </Card.Title>
+                            <Card.Text>
+                                <Row>
+                                    <Col style={{'width': '40px', 'margin-left': '20px'}}>
+                                        Click the two boxes present below for the exact details of the state representation.
+                                    </Col>
+                                </Row>
                             </Card.Text>
                         </Card.Body>                    
                     </Card>   
                 </Col>
             </Row>
 
-            
             <Row className="justify-content-center">
                 <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <div className='board-area'>

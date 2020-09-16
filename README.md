@@ -17,6 +17,7 @@
 <p align="center">
   <a href="#about">About</a> •
   <a href="#features">Features</a> •
+  <a href="#usage">Usage</a> •
   <a href="#installation">Installation</a> •
   <a href="#acknowledgements">Acknowledgements</a>
 </p>
@@ -74,6 +75,17 @@
 </table>
 
 (Used the state and reward space followed in this video: [AI learns to play Snake using RL](https://youtu.be/8cdUree20j4))
+
+## Usage
+#### The following parameters can be set before running the algorithm: 
+1. <b>Episodes</b>: The number of episodes (games/trials) to play and learn from. 
+2. <b>Start Epsilon</b>: The initial probability of exploration. Ranges from 0 to 1.
+3. <b>End Epsilon</b>: The final probability of exploration. Ranges from 0 to 1.
+4. <b>Discount Factor</b>: The importance given to delayed rewards compared to immediate rewards. Ranges from 0 to 1.
+5. <b>Speed/Delay</b>: The delay (in ms) between the moves, lesser values mean faster games (set to lowest value when training).
+
+* The <b>Train</b> button starts training, <b>Stop</b> stops the game and <b>Test</b> shows how the agent plays without training the agent (useful to see how a trained agent plays).
+* The [probability of exploration](https://www.oreilly.com/library/view/hands-on-reinforcement-learning/9781788836524/0c14fb24-1926-4cc3-8bf6-818cae23bde2.xhtml) decreases linearly over the number of episodes given. So the agent moves randomly at the start and explores the state space and towards the end of the training phase (and during testing) it takes informed decisions based on the learned Q values for each state. 
 
 ## Installation
 #### If you would like to tweak the algorithm locally:

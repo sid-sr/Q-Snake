@@ -26,9 +26,11 @@ function App() {
             <Card.Body>
               <Card.Title><b>What is this?</b></Card.Title>  
               <Card.Text>
-                • An interactive visualiser for the Q-learning RL agent that plays Snake. 
+                • An interactive web visualiser for a Q-learning RL agent that plays Snake. 
                 <br></br>
-                • Allows you to set your own hyperparameters and see how the algorithm performs.
+                • Set your own hyperparameters and see how the algorithm performs.
+                <br></br>
+                • Uses <a target='_blank' href="https://en.wikipedia.org/wiki/Q-learning">tabular Q-learning</a>.
               </Card.Text>        
             </Card.Body>
           </Card>
@@ -39,11 +41,11 @@ function App() {
             <Card.Body>
               <Card.Title><b>How do I use this?</b></Card.Title> 
               <Card.Text>
-                • Just set the hyperparameters below and hit <b>Run</b>.
+                • Just set the parameters below and hit <b>Train</b>.
                 <br></br>
-                • Vary the speed to see how the snake plays towards the end.
+                • Vary the speed and click <b>Test</b> to see how the AI plays after training.
                 <br></br>
-                • The code for this project is available on <a href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
+                • Explanation of each parameter and the code for this project is available on <a target='_blank' href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
               </Card.Text>         
             </Card.Body>
           </Card>
