@@ -30,7 +30,7 @@ function App() {
                 <br></br>
                 • Set your own hyperparameters and see how the algorithm performs.
                 <br></br>
-                • Uses <a target='_blank' href="https://en.wikipedia.org/wiki/Q-learning">tabular Q-learning</a>.
+                • Uses <a target='_blank' rel="noopener noreferrer" href="https://en.wikipedia.org/wiki/Q-learning">tabular Q-learning</a>.
               </Card.Text>        
             </Card.Body>
           </Card>
@@ -45,7 +45,7 @@ function App() {
                 <br></br>
                 • Vary the speed and click <b>Test</b> to see how the AI plays after training.
                 <br></br>
-                • Explanation of each parameter and the code for this project is available on <a target='_blank' href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
+                • Explanation of each parameter and the code for this project is available on <a target='_blank' rel="noopener noreferrer" href='https://www.github.com/sid-sr/q-snake'>GitHub</a>.
               </Card.Text>         
             </Card.Body>
           </Card>

@@ -243,6 +243,9 @@ class Board extends Component {
             this.gameOver();    
             if((cur_epsilon - dec) >= this.state.end_epsilon) cur_epsilon -= dec;
             else cur_epsilon = this.state.end_epsilon;
+            
+            //cur_epsilon *= 0.994;
+
             this.setState({...this.state, max_score: mxs, ep: ep+1, epsilon: cur_epsilon})
             if(this.state.agent_state !== 0) 
                 break;
@@ -309,7 +312,7 @@ class Board extends Component {
     }
 
     testAgent = async() => {
-        var done, reward;
+        var done, mxs = 0, reward;
         var next_surr, next_dir, next_v1;
         var surr, dir, v1, dist, action, steps;
         while(this.state.agent_state === 1) {
@@ -350,19 +353,25 @@ class Board extends Component {
                     steps++;
                 else 
                     steps = 0
+                
+                if(this.state.score > mxs) 
+                    mxs = this.state.score;
 
                 if(this.state.agent_state !== 1) 
                     break;
             }
-            this.gameOver();                
+            this.gameOver();               
+            this.setState({...this.state, max_score: mxs}); 
         }
     }
     
     setTestAgentState = () => {
-        this.setState({...this.state, agent_state: 1}, () => {
-            console.log("State updated to test.");
-            this.testAgent();
-        });
+        if(this.state.agent_state != 1) {
+            this.setState({...this.state, agent_state: 1}, () => {
+                console.log("State updated to test.");
+                this.testAgent();
+            });
+        }
     }
 
     render() {
