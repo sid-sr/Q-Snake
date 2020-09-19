@@ -357,7 +357,7 @@ class Board extends Component {
                 if(this.state.score > mxs) 
                     mxs = this.state.score;
 
-                if(this.state.agent_state !== 1) 
+                if(this.state.agent_state !== 1 || steps > 500) 
                     break;
             }
             this.gameOver();               
@@ -366,7 +366,7 @@ class Board extends Component {
     }
     
     setTestAgentState = () => {
-        if(this.state.agent_state != 1) {
+        if(this.state.agent_state !== 1) {
             this.setState({...this.state, agent_state: 1}, () => {
                 console.log("State updated to test.");
                 this.testAgent();
@@ -406,7 +406,7 @@ class Board extends Component {
                                     <Form.Row>                                 
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Episodes:</Form.Label>
-                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="30" max="500" required />
+                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="10" max="1000" required />
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row> 
