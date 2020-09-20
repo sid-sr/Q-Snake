@@ -36,7 +36,10 @@
 </tr>
 </table>
 
+
 ## Features
+
+<img align="right" width="200" src="./src/img/vizgif.gif" alt="AI after 5000 episodes.">
 
 <h4>State Space:</h4>
 

@@ -406,7 +406,7 @@ class Board extends Component {
                                     <Form.Row>                                 
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Episodes:</Form.Label>
-                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="10" max="1000" required />
+                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="10" max="5000" required />
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row> 
