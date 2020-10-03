@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import SnakeDot from './SnakeDot.js';
 import Food from './Food.js';
-import State from './State.js'
+import State from './State.js';
+import QTable from './QTable.js';
 import { Form, Row, Col, Button, Card } from 'react-bootstrap';
 
 const genCoords = () => {
@@ -16,9 +17,9 @@ const manhattanDist = (p1, p2) => {
 
 const createQTable = () => {
     var arr = [];
-    for(var i = 0; i < 16; i++) {
+    for(var i = 0; i < 8; i++) {
         var oth = [];
-        for(var j = 0; j < 8; j++) {
+        for(var j = 0; j < 16; j++) {
             oth.push([0, 0, 0, 0]);
         }
         arr.push(oth);
@@ -26,7 +27,20 @@ const createQTable = () => {
     return arr;
 }
 
+const createVisited = () => {
+    var arr = [];
+    for(var i = 0; i < 8; i++) {
+        var oth = [];
+        for(var j = 0; j < 16; j++) {
+            oth.push(false);
+        }
+        arr.push(oth);
+    }
+    return arr;
+}
+
 var Q_table = createQTable();
+var visited = createVisited();
 
 const dirs = [[-5, 0], [0, -5], [5, 0], [0, 5]];
 
@@ -159,17 +173,15 @@ class Board extends Component {
         });
     }
 
-    action = (eps) => {
-        var [surr, dir] = this.getState();
-        var v1 = surr[0] + (2 * surr[1]) + (4 * surr[2]) + (8 * surr[3]);
+    action = (eps, dir, v1) => {
         if(Math.random() < eps) {
             return Math.floor(Math.random() * 4);
         }
         else {
             var mx = -100000, ind = 0;
             for(var i = 0; i < 4; i++) {
-                if(Q_table[v1][dir][i] > mx) {
-                    mx = Q_table[v1][dir][i];
+                if(Q_table[dir][v1][i] > mx) {
+                    mx = Q_table[dir][v1][i];
                     ind = i;
                 }
             }
@@ -178,6 +190,8 @@ class Board extends Component {
     }
 
     qlearning = async () => {
+        Q_table = createQTable();
+        visited = createVisited();
         var mx, mxs = 0, done, reward;
         var next_surr, next_dir, next_v1;
         var surr, dir, v1, dist, action, steps;
@@ -194,8 +208,9 @@ class Board extends Component {
                 dist = manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]);
 
                 // step
-                action = this.action(cur_epsilon);
-                
+                action = this.action(cur_epsilon, dir, v1);
+                visited[dir][v1] = true;
+
                 // moving and checking the length 2 edge case:
                 if(this.setDir(action + 37)) done = true;
                 else await delay(this.state.speed);
@@ -219,14 +234,14 @@ class Board extends Component {
                 if(!done) {
                     mx = -100000;
                     for(var i = 0; i < 4; i++) {
-                        if(Q_table[next_v1][next_dir][i] >= mx) {
-                            mx = Q_table[next_v1][next_dir][i];
+                        if(Q_table[next_dir][next_v1][i] >= mx) {
+                            mx = Q_table[next_dir][next_v1][i];
                         }
                     }
                 }          
                 else mx = 0;      
 
-                Q_table[v1][dir][action] += 0.01 * ((reward + (this.state.discount_factor * mx)) - Q_table[v1][dir][action])
+                Q_table[dir][v1][action] += 0.01 * ((reward + (this.state.discount_factor * mx)) - Q_table[dir][v1][action])
                 
                 v1 = next_v1;
                 dir = next_dir;
@@ -312,9 +327,9 @@ class Board extends Component {
     }
 
     testAgent = async() => {
-        var done, mxs = 0, reward;
+        var done, mxs = 0;
         var next_surr, next_dir, next_v1;
-        var surr, dir, v1, dist, action, steps;
+        var surr, dir, v1, action, dist, steps;
         while(this.state.agent_state === 1) {
             done = false;
             [surr, dir] = this.getState();
@@ -325,8 +340,8 @@ class Board extends Component {
                 dist = manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]);
 
                 // step
-                action = this.action(0);
-                
+                action = this.action(0, dir, v1);
+
                 // moving and checking the length 2 edge case:
                 if(this.setDir(action + 37)) done = true;
                 else await delay(this.state.speed);
@@ -336,16 +351,6 @@ class Board extends Component {
                     [next_surr, next_dir] = this.getState();
                     next_v1 = next_surr[0] + (2 * next_surr[1]) + (4 * next_surr[2]) + (8 * next_surr[3]);
                 }
-
-                // reward
-                if(done) 
-                    reward = -100;
-                else if(this.state.justAte) 
-                    reward = 30;
-                else if(manhattanDist(this.state.food, this.state.dots[this.state.dots.length - 1]) < dist) 
-                    reward = 1;
-                else 
-                    reward = -5;     
                     
                 v1 = next_v1;
                 dir = next_dir;
@@ -496,7 +501,11 @@ class Board extends Component {
                     <State curState={this.getState()} />
                 </Col>    
             </Row>
-
+            <Row className="justify-content-center">
+                <Col  md="auto" lg="auto" sm="auto" xs="auto">
+                    <QTable curState={Q_table} found={visited}/>
+                </Col>
+            </Row>
             </>
         );
     }

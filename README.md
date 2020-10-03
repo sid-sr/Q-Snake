@@ -31,7 +31,7 @@
 
 • A website that visualises the Q-learning RL algorithm and shows how an AI agent can learn to play Snake using it. <br>
 • Built using [create-react-app](https://github.com/facebook/create-react-app) and uses no reinforcement learning libraries/environments. <br>
-• Uses a simplified state representation to ensure learning is fast, this converts it into more of a planning problem than RL, but the goal was just to visualise the RL algorithm within a reasonable training duration.
+• Uses a simplified state representation and reward space to ensure learning is fast, this converts it into more of a planning problem than RL, but the goal was just to visualise the RL algorithm within a reasonable training duration.
 </td>
 </tr>
 </table>
@@ -46,9 +46,11 @@
 * Using just 2 values to represent a state, which are:
 * Relative location of the apple to the head (8 directions)
 * Presence of danger one step ahead of the head in 4 directions (array of 4 numbers, which results in 16 values).
-* This results in a **16 x 8 x 4** Q-table.
+* This results in a **8 x 16 x 4** Q-table. The visualization to the right is after training the snake for 5000 episodes.
 
 <h4>Reward Space:</h4>
+
+The reward space used here makes the problem a lot easier to solve, but it was mainly to ensure reasonable results are obtained in a short time frame.
 
 <table class="tg">
 <thead>
@@ -79,12 +81,20 @@
 
 (Used the state and reward space followed in this video: [AI learns to play Snake using RL](https://youtu.be/8cdUree20j4))
 
+<h4>The Q-table:</h4>
+<img align='center' src='./src/img/qtable.png' alt='The Q-table'>
+
+* The Q-table shown above has dimensions 8 x 16 (with 4 entries in each cell for each move).
+* The **white** entries correspond to unexplored states.
+* The **red** entries correspond to explored states with wrong move learnt by the AI.
+* The **green** entries correspond to explored states with right move learnt by the AI (ie: what move a human would make).
+
 ## Usage
 #### The following parameters can be set before running the algorithm: 
 1. <b>Episodes</b>: The number of episodes (games/trials) to play and learn from. 
 2. <b>Start Epsilon</b>: The initial probability of exploration. Ranges from 0 to 1.
-3. <b>End Epsilon</b>: The final probability of exploration. Ranges from 0 to 1.
-4. <b>Discount Factor</b>: The importance given to delayed rewards compared to immediate rewards. Ranges from 0 to 1.
+3. <b>End Epsilon</b>: The final probability of exploration. Range: 0 to 1.
+4. <b>Discount Factor</b>: The importance given to delayed rewards compared to immediate rewards. Range: 0 to 1.
 5. <b>Speed/Delay</b>: The delay (in ms) between the moves, lesser values mean faster games (set to lowest value when training).
 
 * The <b>Train</b> button starts training, <b>Stop</b> stops the game and <b>Test</b> shows how the agent plays without training the agent (useful to see how a trained agent plays).
