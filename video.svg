@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Snake</title><g id="Snake"><path d="M21,1H3A2,2,0,0,0,1,3V21a2,2,0,0,0,2,2H21a2,2,0,0,0,2-2V3A2,2,0,0,0,21,1ZM9.65,5.65l1.5-1.5a.5.5,0,0,1,.71,0l1.5,1.5a.5.5,0,0,1,0,.71l-1.5,1.5a.5.5,0,0,1-.71,0l-1.5-1.5A.5.5,0,0,1,9.65,5.65ZM20,19.5a.5.5,0,0,1-.5.5H4.5a.5.5,0,0,1-.5-.5v-2a.5.5,0,0,1,.5-.5H17V14H10.5a.5.5,0,0,1-.5-.5v-4a.5.5,0,0,1,.5-.5h2a.5.5,0,0,1,.5.5V11h6.5a.5.5,0,0,1,.5.5Z" style="fill:#303c42"/></g>
+	<metadata>
+		<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+			<rdf:Description about="https://iconscout.com/legal#licenses" dc:title="video; game; play; snake" dc:description="video; game; play; snake" dc:publisher="Iconscout" dc:date="2017-02-21" dc:format="image/svg+xml" dc:language="en">
+				<dc:creator>
+					<rdf:Bag>
+						<rdf:li>Alpár - Etele Méder</rdf:li>
+					</rdf:Bag>
+				</dc:creator>
+			</rdf:Description>
+		</rdf:RDF>
+    </metadata></svg>
