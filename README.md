@@ -8,7 +8,9 @@
     <h1 align='center'> Q-Snake </h1>
 </p>
 <h4 align='center'>An interactive Q-learning web visualiser for Snake built with React.js </h4>
-
+<p align='center'>
+  https://sid-sr.github.io/Q-Snake/
+</p>
 <p align="center">
   <a href='https://lbesson.mit-license.org/'>
   <img src='https://img.shields.io/badge/License-MIT-blue.svg'>
