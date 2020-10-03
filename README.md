@@ -50,7 +50,7 @@
 
 <h4>Reward Space:</h4>
 
-The reward space used here makes the problem a lot easier to solve, but it was mainly to ensure reasonable results are obtained in a short time frame.
+The reward space used here makes the problem a lot easier to solve, but it was to ensure reasonable results are obtained in a short time frame and the changes in the Q-table can be visualized quickly.
 
 <table class="tg">
 <thead>
@@ -85,6 +85,8 @@ The reward space used here makes the problem a lot easier to solve, but it was m
 <img align='center' src='./src/img/qtable.png' alt='The Q-table'>
 
 * The Q-table shown above has dimensions 8 x 16 (with 4 entries in each cell for each move).
+* Each cell in the grid is a state, ie: one situation the snake finds itself in, like the apple is in the top left direction and there is danger to left, which move do I make - up, left, down, or right?
+* The blank entries correspond to unexplored states. So initially, all states are unexplored. As the AI plays the game, it explores the different states and tries to learn what moves work (based on the reward for each action made).
 * The **white** entries correspond to unexplored states.
 * The **red** entries correspond to explored states with wrong move learnt by the AI.
 * The **green** entries correspond to explored states with right move learnt by the AI (ie: what move a human would make).
@@ -92,7 +94,7 @@ The reward space used here makes the problem a lot easier to solve, but it was m
 ## Usage
 #### The following parameters can be set before running the algorithm: 
 1. <b>Episodes</b>: The number of episodes (games/trials) to play and learn from. 
-2. <b>Start Epsilon</b>: The initial probability of exploration. Ranges from 0 to 1.
+2. <b>Start Epsilon</b>: The initial probability of exploration. Range: 0 to 1.
 3. <b>End Epsilon</b>: The final probability of exploration. Range: 0 to 1.
 4. <b>Discount Factor</b>: The importance given to delayed rewards compared to immediate rewards. Range: 0 to 1.
 5. <b>Speed/Delay</b>: The delay (in ms) between the moves, lesser values mean faster games (set to lowest value when training).

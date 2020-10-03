@@ -405,13 +405,13 @@ class Board extends Component {
                                     <Form.Row>
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>End Epsilon:</Form.Label>
-                                            <Form.Control name="end_epsilon" type="number" placeholder="Less than 0.05" min="0" max="1" step="0.01" required/>
+                                            <Form.Control name="end_epsilon" type="number" placeholder="Usually around 0." min="0" max="1" step="0.01" required/>
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row>                                 
                                         <Form.Group style={{'min-width': '255px'}}>
                                             <Form.Label>Episodes:</Form.Label>
-                                            <Form.Control name="episodes" type="number" placeholder="Around 150" min="10" max="5000" required />
+                                            <Form.Control name="episodes" type="number" placeholder="Around 150-200" min="10" max="5000" required />
                                         </Form.Group>
                                     </Form.Row> 
                                     <Form.Row> 
@@ -502,10 +502,28 @@ class Board extends Component {
                 </Col>    
             </Row>
             <Row className="justify-content-center">
-                <Col  md="auto" lg="auto" sm="auto" xs="auto">
+                <Col md="auto" lg="auto" sm="auto" xs="auto">
                     <QTable curState={Q_table} found={visited}/>
                 </Col>
             </Row>
+            <Row className="justify-content-center">
+                <Col md="auto" lg="auto" sm="auto" xs="auto" style={{'margin-bottom': '50px'}}>
+                    <Card style={{'width': '610px'}}>
+                        <Card.Title style={{'margin-top': '20px', 'margin-bottom': '-5px'}}><b>The Q-Table:</b></Card.Title>
+                        <Card.Body>
+                        <ul>
+                            <li>The Q-table shown above has dimensions <b>8 x 16</b> (with 4 entries in each cell for each move, here we just show the best move learnt so far).</li>
+                            <li>Each cell in the grid is a <b>state</b>, ie: one situation the snake finds itself in, like the apple is in the top left direction and there is danger to left, which move do I make - up, left, down, or right?</li>
+                            <li>The blank entries correspond to unexplored states. So initially, all states are unexplored. As the AI plays the game, it explores the different states and tries to learn what moves work (based on the reward for each action made).</li>                            
+                            <li>The <sp style={{'color': 'red'}}>red</sp> entries correspond to explored states with wrong move learnt by the AI.</li>
+                            <li>The <sp style={{'color': 'green'}}>green</sp> entries correspond to explored states with right move learnt by the AI (ie: what move a human would make).</li>
+                            <li>The 8 rows correspond to: Relative location of the apple to the head (8 directions)</li>
+                            <li>The 16 columns correspond to: Presence of danger one step ahead of the head in 4 directions (array of 4 numbers, which results in 16 possible values).</li>
+                        </ul>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>            
             </>
         );
     }

@@ -24,7 +24,7 @@ const best_moves = [
 const QTable = (props) => {
     return (
         <>
-        <div style={{'margin-top': '30px', 'margin-bottom': '50px'}}>
+        <div style={{'margin-top': '30px', 'margin-bottom': '30px'}}>
         {
             
                 props.curState.map((arr, row) => {
@@ -60,51 +60,3 @@ const QTable = (props) => {
 }
 
 export default QTable;
-
-/*
-
-            {
-            props.curState.map((arr, row) => {
-                var v = arr.map(argMax), r = row
-                return (
-                    <Row>          
-                        {v}
-                    </Row>
-                )    
-            })
-            }     
-
-            props.curState.map((arr, row) => {
-                var v = arr.map(argMax), r = row
-                return (
-                    <Row>          
-                        v.map((val, col) => {
-                            if(!props.found[row][col]) {
-                                <div className='square' style={{'background-color': 'gray'}}></div>
-                            }
-                            else {
-                                <div className='square' style={{'background-color': '#18ff85'}}></div>
-                            }
-                        })
-                    </Row>
-                )    
-            }) 
-
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div> 
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                              
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div> 
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>                  
-            <div className='square' style={{'background-color': 'white'}}></div>               
-
-            */
