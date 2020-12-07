@@ -64,7 +64,7 @@ The reward space used here makes the problem a lot easier to solve, but it was t
 <tbody>
   <tr>
     <td class="tg-0lax">Hitting the border / eating itself / moving 500 steps without eating the apple</td>
-    <td class="tg-0lax"><span style="font-weight:bold">+100</span></td>
+    <td class="tg-0lax"><span style="font-weight:bold">-100</span></td>
   </tr>
   <tr>
     <td class="tg-0lax">Eating the apple</td>
